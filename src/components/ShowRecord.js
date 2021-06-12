@@ -8,6 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import EditModal from './EditRecord';
+
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -35,28 +37,38 @@ const useStyles = makeStyles({
 });
 
 
-export default function CustomizedTables({}) {
+export default function CustomizedTables() {
   const classes = useStyles();
-  var [records, setRecord] = useState([]);
+  const [records, setRecord] = useState([]);
+  const [show,setShowModal]=useState(false);
+  const [user,setUser] = useState({});
 
-  function onhandleDelete(id){
-    console.log(id,"button is clicked id")
-    for(var i = 0; i<records.length; i++){
-        localStorage.removeItem(records[id])
-        
-    }
-  }
+  function onhandleDelete(cnic){
+    console.log("index:",cnic);
+    let newArr = records.filter((value)=> value.cnic !== cnic ? value:'' )
+    setRecord(newArr);
+    console.log("newArr >>",newArr) 
+    localStorage.setItem("AllRecords", JSON.stringify(newArr));
+   }
   
-  function onhandleUpdate(id){
 
-  }
+  let showModal= (name,date,cnic,fathername,address)=>{
+    const user={
+      name,date,cnic,fathername,address
+    }
+    console.log("user >>",user);
+    setUser(user);
+    setShowModal(true)};
+  
+
+  let closeModal=()=>{setShowModal(false)};
+
+useEffect(()=>{
+  console.log({records});
+},[records])
 
   useEffect(() => {
-      
-  })
-
-  useEffect(() => {
-    records = JSON.parse(localStorage.getItem("AllRecords"))
+    let records = JSON.parse(localStorage.getItem("AllRecords"))
     console.log("AllRecords: ", records)
     setRecord(records)
   },[])
@@ -74,20 +86,23 @@ export default function CustomizedTables({}) {
             <StyledTableCell align="right">Actions</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody className="table">
-          {records.map((record, index) => (
+        <TableBody>
+          {records && records.map(({name,date,cnic,fathername,address},index) => (
             <StyledTableRow key={index} >
-              <StyledTableCell component="th" scope="row">{record.name}</StyledTableCell>
-              <StyledTableCell align="right">{record.date}</StyledTableCell>
-              <StyledTableCell align="right">{record.cnic}</StyledTableCell>
-              <StyledTableCell align="right">{record.fathername}</StyledTableCell>
-              <StyledTableCell align="right">{record.address}</StyledTableCell>
+              <StyledTableCell component="th" scope="row">{name}</StyledTableCell>
+              <StyledTableCell align="right">{date}</StyledTableCell>
+              <StyledTableCell align="right">{cnic}</StyledTableCell>
+              <StyledTableCell align="right">{fathername}</StyledTableCell>
+              <StyledTableCell align="right">{address}</StyledTableCell>
               <StyledTableCell align="right">
-                  <Button  variant="contained" color="primary" onCLick={()=>onhandleUpdate(index)}>Edit</Button>
-                  <Button  variant="contained" color="secondary" onClick={()=>onhandleDelete(index)}>Delete</Button>
+                  <Button  variant="contained" color="primary" 
+                    onClick={()=>showModal(name,date,cnic,fathername,address)}>
+                    Edit</Button>
+                  <Button  variant="contained" color="secondary" onClick={()=>onhandleDelete(cnic)}>Delete</Button>
               </StyledTableCell>
             </StyledTableRow>
           ))}
+          <EditModal show={show} onHide={closeModal} user={user} />
         </TableBody>
       </Table>
     </TableContainer>

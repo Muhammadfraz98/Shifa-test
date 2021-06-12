@@ -44,32 +44,32 @@ export default function SignUp() {
   const [fathername, setFatherName] = useState('');
   const [address, setAddress] = useState('');
 
-  const data={name: name, date, cnic, fathername, address}
+  useEffect(() => {
+    var record= localStorage.getItem("AllRecords")
+    console.log("record data from local storage:",record)
+  })
 
   //Adding New Data
   const AddData = e => {
     e.preventDefault()
+    const data={name: name, date, cnic, fathername, address}
     if(name.length> 0  && date.length>0 && cnic.length>0 && fathername.length > 0 && address.length>0) {
       console.log("Data:",data)
-      var recievedData = JSON.stringify(data);
+      var recievedData = data;
       console.log("recievedData:" ,recievedData)
+      // localStorage.setItem("record", data);
       recordArray.push(data)
-      localStorage.setItem("record", ["name: " ,data.name, "fathername: ", data.fathername," dob: ", data.date, "cnic: ", data.cnic, "adress: ", data.address,]);
-      console.log("RecordArray:" ,recordArray)
       localStorage.setItem("AllRecords", JSON.stringify(recordArray));
     }
-  }
+  } 
 
+  //TODO UseFormik for forms
 
   function handleClick() {
       history.push("/home");
     }
 
-  useEffect(() => {
-    var record=localStorage.getItem("AllRecords")
-    console.log("record data from local storage:",record)
-  })
-
+  
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -97,6 +97,7 @@ export default function SignUp() {
                 variant="outlined"
                 label="Birthday"
                 type="date"
+                required
                 defaultValue="yyyy-mm-dd"
                 className={classes.textField}
                 InputLabelProps={{
@@ -110,6 +111,7 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
+                type="number"
                 id="cnic"
                 label="CNIC"
                 name="cnic"
