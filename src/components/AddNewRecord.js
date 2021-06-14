@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -7,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from "react-router-dom";
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 
@@ -45,9 +43,10 @@ export default function SignUp() {
   const [address, setAddress] = useState('');
 
   useEffect(() => {
-    var record= localStorage.getItem("AllRecords")
+    var record= JSON.parse(localStorage.getItem("AllRecords"));
+    record && record.length > 0 && setRecordArray([...record]);
     console.log("record data from local storage:",record)
-  })
+  },[])
 
   //Adding New Data
   const AddData = e => {
@@ -111,7 +110,9 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                type="number"
+                type="tel"
+                placeholder="xxxxx-xxxxxxx-x"
+                pattern="[0-9]{5}-[0-9]{7}-[0-9]{1}"
                 id="cnic"
                 label="CNIC"
                 name="cnic"

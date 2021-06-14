@@ -1,5 +1,6 @@
 import React, { useState }  from 'react';
 import { Redirect } from 'react-router-dom'
+import { useHistory } from "react-router-dom"
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,6 +10,8 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Link from '@material-ui/core/Link';
+import { useEffect } from 'react';
 
 
 
@@ -45,28 +48,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
-  const [name, setName] = useState('')
+  const history = useHistory();
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
+
+  var person = JSON.parse(localStorage.getItem('users'));
+
+
 
   // login the user
   const handleSignIn = e => {
     e.preventDefault()
-    if(name.length> 0  && password.length > 0) {
-      const user={name: name,password}
+    if(email.length> 0  && password.length > 0) {
+      const user={email: email,password}
       console.log(user)
-      localStorage.setItem("user", ["name: " ,user.name," password: ", user.password]);
-      setLoggedIn(true);
+      console.log("person :",person)
+      if(person.email== user.email && person.password == user.password){
+        setLoggedIn(true);
+      }
+      // localStorage.setItem("users", ["name: " ,user.email," password: ", user.password]); 
     }
   }
+
+
   if(loggedIn) {
     return <Redirect to="/home" />
   }
-  else {
-   <Redirect to="/" />
-  }
-  
 
+  
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -85,12 +95,12 @@ export default function SignInSide() {
               margin="normal"
               required
               fullWidth
-              id="name"
-              label="name"
-              name="name"
-              autoComplete="name"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              id="email"
+              label="email"
+              name="email"
+              autoComplete="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               autoFocus
             />
             <TextField
@@ -116,6 +126,11 @@ export default function SignInSide() {
             >
               Log In
             </Button>
+            <Grid item>
+                <Link href="/signup" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
           </form>
         </div>
       </Grid>

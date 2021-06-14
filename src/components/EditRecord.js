@@ -10,20 +10,30 @@ const EditModal = ({show,onHide,user}) => {
     const [address, setAddress] = useState('');
 
     useEffect(()=>{
+       
+        const {name,date,cnic,fathername,address}=user;
+        setName(name);
+        setDate(date);
+            setCnic(cnic);
+            setFatherName(fathername);
+            setAddress(address);
         console.log("user >>",user);
-        },[])
+
+        },[user])
 
     const onhandleUpdate = e =>{
         e.preventDefault();
+        let allRecords = JSON.parse(localStorage.getItem('AllRecords'));
+        console.log("all records",allRecords);
         const data={name: name, date, cnic, fathername, address}
-        if(name.length> 0  && date.length>0 && cnic.length>0 && fathername.length > 0 && address.length>0) {
-            console.log("Data:",data)
-            var recievedData = data;
-            console.log("recievedData:" ,recievedData)
-            // localStorage.setItem("record", data);
-            updatedRecord.push(data)
-            localStorage.setItem("AllRecords", JSON.stringify(updatedRecord));
-          }
+                allRecords.length > 0 && allRecords.map((record,index) => {
+                    if(record.cnic === cnic){
+                        console.log("found cnics");
+                        allRecords[index]=data;
+                    }
+                })
+           localStorage.setItem("AllRecords",JSON.stringify(allRecords));    
+          
     }
 
     return (
@@ -35,25 +45,25 @@ const EditModal = ({show,onHide,user}) => {
         <Form>
             <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter Name" value={user.name} onChange={e => setName(e.target.value)}/>
+                <Form.Control type="text" placeholder="Enter Name" value={name} onChange={e => setName(e.target.value)}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicDOB">
                 <Form.Label>Birthday</Form.Label>
-                <Form.Control type="text" placeholder="Father Name" value={user.date} onChange={e => setDate(e.target.value)}/>
+                <Form.Control type="text" placeholder="Father Name" value={date} onChange={e => setDate(e.target.value)}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicCnic">
                 <Form.Label>Cnic</Form.Label>
-                <Form.Control type="text" placeholder="Date Of Birth" value={user.cnic} onChange={e => setCnic(e.target.value)}/>
+                <Form.Control type="text" placeholder="Date Of Birth" value={cnic} onChange={e => setCnic(e.target.value)}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicFatherName">
                 <Form.Label>Father Name</Form.Label>
-                <Form.Control type="text" placeholder="Father Name" value={user.fathername} onChange={e => setFatherName(e.target.value)}/>
+                <Form.Control type="text" placeholder="Father Name" value={fathername} onChange={e => setFatherName(e.target.value)}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicAddress">
                 <Form.Label>Address</Form.Label>
-                <Form.Control type="text" placeholder="Address" value={user.address} onChange={e => setAddress(e.target.value)}/>
+                <Form.Control type="text" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)}/>
             </Form.Group>
-            <Button variant="primary" type="submit" onClick={()=>onhandleUpdate}>
+            <Button variant="primary" type="button" onClick={onhandleUpdate}>
                 Update Record
             </Button>
             </Form>

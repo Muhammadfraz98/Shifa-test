@@ -71,7 +71,7 @@ useEffect(()=>{
     let records = JSON.parse(localStorage.getItem("AllRecords"))
     console.log("AllRecords: ", records)
     setRecord(records)
-  },[])
+  },[localStorage.getItem("AllRecords")])
 
   return (
     <TableContainer component={Paper}>
